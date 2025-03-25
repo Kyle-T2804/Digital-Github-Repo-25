@@ -1,1 +1,5 @@
-print("test")
+def hookfunc():
+    print("test")
+    
+    
+hookfunc()
