@@ -9,3 +9,5 @@ def welcome():
     print("***Welcome to Jollibee ***")
     print("***My name is",name,"***")
     print("***I will be here to help you order your delicious Jollibee meal***")    
+
+welcome()
