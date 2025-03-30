@@ -14,5 +14,4 @@ def welcome():
     print(f"{bold}***Welcome to Jollibee***{reset}")
     print(f"{bold}***My name is {name}***{reset}")
     print(f"{bold}***I will be here to help you order your delicious Jollibee meal***{reset}")
-    print("test")
 welcome()
