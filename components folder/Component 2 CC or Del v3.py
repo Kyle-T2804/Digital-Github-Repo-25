@@ -8,10 +8,10 @@ print("Enter 2 for Delivery")
 while True:
     try:
         num = int(input("Please enter 1 or 2: "))
-        if num == 1:
+        if num == low:
             print("Click and collect")
             break
-        elif num == 2:
+        elif num == high:
             print("Delivery")
             break
         else: num = int(input("Invalid number, please enter 1 or 2: "))
