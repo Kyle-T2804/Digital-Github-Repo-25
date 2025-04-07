@@ -5,7 +5,8 @@ reset = "\033[0m"
 
 
 
-bot_names = ["Elrick", "Mateo", "Edward", "River", "Kyle",  "Sean Combs", "Faustino", "Gallegos"]
+bot_names = ["Elrick", "Mateo", "Edward", "River", "Kyle",  
+             "Sean Combs", "Faustino", "Gallegos"]
 
 
 def welcome():
