@@ -1,9 +1,9 @@
+from random import randint
 # ANSI escape codes for bold text
 bold = "\033[1m"
 reset = "\033[0m"
 
-import random
-from random import randint
+
 
 bot_names = ["Elrick", "Mateo", "Edward", "River", "Kyle",  "Sean Combs", "Faustino", "Gallegos"]
 
