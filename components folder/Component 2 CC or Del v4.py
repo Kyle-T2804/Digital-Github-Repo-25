@@ -1,6 +1,5 @@
-low = 1
-high = 2
-num = 0
+LOW = 1
+HIGH = 2
 
 print("Would you like to Click and collect your order or want your order to be Delivered?")
 print("Enter 1 for Click and collect")
@@ -8,10 +7,10 @@ print("Enter 2 for Delivery")
 while True:
     try:
         num = int(input("Please enter 1 or 2: "))
-        if num == low:
+        if num == LOW:
             print("Click and collect")
             break
-        elif num == high:
+        elif num == HIGH:
             print("Delivery")
             break
         else: num = int(input("Invalid number, please enter 1 or 2: "))
