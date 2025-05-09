@@ -17,4 +17,8 @@ def welcome():
     print(f"{bold}***I will be here to help you order your delicious Jollibee meal***{reset}")
 
 # Call the welcome function to display the message
-welcome()
+def main():
+    welcome()
+
+
+
