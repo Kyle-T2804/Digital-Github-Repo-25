@@ -34,11 +34,11 @@ def integer_validation(low, high, question):
                 return num  # Return the valid input
             else:
                 # Inform the user if the input is out of range
-                print(f"Please enter {LOW} or {HIGH}")   
+                (f"Please enter {LOW} or {HIGH}")   
         except ValueError:
             # Handle non-integer inputs
             print("Invalid input, please enter the options between 1 or 2")
-            print(f"Please enter {LOW} or {HIGH}")
+            (f"Please enter {LOW} or {HIGH}")
 
 # Function to handle the pickup or delivery selection
 def pickup_delivery():
