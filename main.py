@@ -57,7 +57,15 @@ def pickup_delivery():
     elif del_pick == 2:
         print("Delivery")  
 
-# Call the welcome function to display the message
-welcome()
-# Call the pickup_delivery function to execute the program
-pickup_delivery()
+
+
+
+
+
+# Calls both the welcome function and the pickup_delivery functions
+
+def main():
+    welcome()
+    pickup_delivery()
+    
+main()
