@@ -1,30 +1,24 @@
 import re
 
-
-#Customer details dictionary
+# Dictionary to store customer details
 customer_details = {}
 
-
-#while loop for validation of name
-
+# Loop to validate the customer's name input
 while True:
-    question = "Please enter your name: "
-    response = input(question)
-    #removes blank spaces from response
+    response = input("Please enter your name: ")
+    # Remove all whitespace from the input
     no_blanks = re.sub(r"\s+", "", response)
-    #checking if input is alphabetical
-    x = no_blanks.isalpha()
-    if x == False:
-        # if not then print error message
+    # Check if the input contains only alphabetic characters
+    if not no_blanks.isalpha():
         print("Input must only contain letters")
     else:
-        #if alpha converts to title case and append to dictionary
+        # Convert valid input to title case and store in the dictionary
         customer_details["name"] = response.title()
         break
 
+# Placeholder for additional customer details input (e.g., phone number)
+# customer_details["phone"] = input("Please enter your phone number: ")
 
-#ask user for input
-
-#customer_details["phone"] = input("Please enter your phone number: ")
-
-print(customer_details)
+# Display the collected customer details
+print("\nCustomer Details:")
+print(f"Name: {customer_details['name']}")

@@ -1,13 +1,10 @@
-# ask user for input
-print("Please enter your name: ")
-name = input()
-print("Please enter your phone number: ")
-phone = input()
-print("Please enter your adress: ")
-adress = input()
+# Prompt the user for their details
+name = input("Please enter your name: ")
+phone = input("Please enter your phone number: ")
+address = input("Please enter your address: ")
 
-
-#printing customer details
-print(name)
-print(phone)
-print(adress)
+# Display the collected customer details
+print("\nCustomer Details:")
+print(f"Name: {name}")
+print(f"Phone: {phone}")
+print(f"Address: {address}")

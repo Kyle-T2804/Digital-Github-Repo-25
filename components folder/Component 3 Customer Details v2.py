@@ -1,10 +1,10 @@
-#Customer details dictionary
+# Prompt the user for their details and store them in a dictionary
 customer_details = {}
-
-
-#while loop for validation of name
 
 customer_details["name"] = input("Please enter your name: ")
 customer_details["phone"] = input("Please enter your phone number: ")
 
-print(customer_details)
+# Display the collected customer details in a neat format
+print("\nCustomer Details:")
+print(f"Name: {customer_details['name']}")
+print(f"Phone: {customer_details['phone']}")
