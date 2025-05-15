@@ -194,11 +194,27 @@ def jollibee_order():
             print("{} ${:.2f}".format(menu_items[item_ordered], menu_prices[item_ordered]))
             num_items = num_items - 1
 
+# Calculate total cost and apply delivery charge if needed
+def calculate_total(order_cost, del_pick):
+    """
+    Calculates the total cost of the order.
+    Adds a $14 delivery charge if the order is for delivery and the total is $50 or less.
+    Returns the final total and delivery charge.
+    """
+    total = sum(order_cost)
+    delivery_charge = 0
+    if del_pick == 2:  # 2 means delivery
+        if total <= 50:
+            delivery_charge = 14.00
+            total += delivery_charge
+    return total, delivery_charge
+
 # Display customer order
 def print_order(del_pick):
     """
     Prints the customer's details and order summary.
     Shows different details depending on click and collect or delivery.
+    Adds delivery charge if applicable.
     """
     print()
     print(Fore.GREEN + "Customer Details")
@@ -212,7 +228,9 @@ def print_order(del_pick):
     print(Fore.GREEN + "Order Details")
     for count, item in enumerate(order_list):
         print(Style.BRIGHT + "Ordered: {} Cost  ${:.2f}".format(item, order_cost[count]))
-    total_cost = sum(order_cost)
+    total_cost, delivery_charge = calculate_total(order_cost, del_pick)
+    if del_pick == 2 and delivery_charge > 0:
+        print(Style.BRIGHT + f"Delivery Charge: ${delivery_charge:.2f} (Orders over $50 get free delivery)")
     print(Style.BRIGHT + "Total Cost: ${:.2f}".format(total_cost))
     print()
 
