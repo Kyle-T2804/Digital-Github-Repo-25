@@ -3,20 +3,22 @@
 # Programmer: Kyle Tamani
 # Known Bugs: None
 
-# Import required libraries for data handling, validation, and colored output
-import pandas as pd
-import re
-import random
+# --- Imports ---
+import pandas as pd  # For displaying menu as a table
+import re            # For input validation
+import random        # For random bot name
 import sys
 from random import randint
-from colorama import Fore, Style, Back, init
+from colorama import Fore, Style, Back, init  # For colored terminal output
 
-# List of bot names used by bot for a friendly greeting
+# --- Bot Names ---
+# List of bot names used for a friendly greeting
 bot_names = [
     "Elrick", "Mateo", "Edward", "River", "Kyle",
     "Sean Combs", "Faustino", "Gallegos"
 ]
 
+# --- Menu Data ---
 # Jollibee menu items and their corresponding prices
 menu_items = [
     "Chickenjoy", "Jolly Spaghetti", "Burger Steak", "Yumburger", "Jolly Hotdog", "Palabok Fiesta", "Jolly Crispy Fries", "Jolly Burger Steak",
@@ -28,21 +30,20 @@ menu_prices = [
     5.99, 3.99, 4.99, 2.99, 3.49, 4.49, 1.99, 4.99, 3.49, 1.49, 1.29, 2.49, 1.99, 1.49, 3.99, 2.49, 2.99, 2.49, 3.49, 3.99, 3.79, 3.49, 3.99, 4.29, 3.99
 ]
 
-# Lists to store ordered items and their prices for the current order
-order_list = []
-order_cost = []
+# --- Order State ---
+order_list = []      # Stores ordered items
+order_cost = []      # Stores cost of each ordered item
+customer_details = {}  # Stores customer info for the current order
 
-# Dictionary to store customer details for the current order
-customer_details = {}
-
-# Constant variables for low and high numbers for menu options
+# --- Constants ---
 LOW = 1
 HIGH = 2
 
-# Set autoreset to true so that coloured text automatically stops at end of print statement
-init(autoreset=True)
+# --- Colorama Setup ---
+init(autoreset=True)  # Automatically reset color after each print
 
-# Function to validate integer input within a range
+# --- Input Validation Functions ---
+
 def integer_validation(low, high, question):
     """
     Validates that the user enters an integer within the specified range.
@@ -59,7 +60,6 @@ def integer_validation(low, high, question):
             print("Invalid input, please enter the options between 1 or 2")
             print(f"Please enter {LOW} or {HIGH}")
 
-# Function to validate alphabetic input (no numbers or special characters)
 def validate_alpha(question):
     """
     Prompts the user for input and ensures it only contains alphabetic characters.
@@ -67,15 +67,14 @@ def validate_alpha(question):
     """
     while True:
         response = input(question)
-        # Remove all whitespace from the input
         no_blanks = re.sub(r"\s+", "", response)
-        # Check if input is alphabetic
         if not no_blanks.isalpha():
             print("Input must only contain letters")
         else:
             return response
 
-# Welcome message with random bot name
+# --- Main Bot Functions ---
+
 def welcome():
     """
     Prints a welcome message and introduces the bot with a random name.
@@ -85,7 +84,6 @@ def welcome():
     print(Fore.CYAN + Style.BRIGHT + f"***My name is {name}***" + Style.RESET_ALL)
     print(Fore.MAGENTA + "***I will be here to help you order your delicious Jollibee meal***" + Style.RESET_ALL)
 
-# Function for pickup or delivery selection
 def pickup_delivery():
     """
     Asks the user if they want click and collect or delivery.
@@ -98,15 +96,12 @@ def pickup_delivery():
     question = f"{Fore.YELLOW}Please enter {LOW} or {HIGH}:{Style.RESET_ALL} "
     del_pick = integer_validation(LOW, HIGH, question)
     if del_pick == 1:
-        # Collect details for click and collect
-        click_collect()
+        click_collect()      # Collect name and phone for pickup
     elif del_pick == 2:
-        # Collect details for delivery (includes address)
-        click_collect()
-        delivery_info()
+        click_collect()      # Collect name and phone for delivery
+        delivery_info()      # Collect address for delivery
     return del_pick
 
-# Collect Click and Collect data (name and phone)
 def click_collect():
     """
     Collects and validates the customer's name and phone number for click and collect or delivery.
@@ -131,7 +126,6 @@ def click_collect():
         else:
             print("This is an invalid phone number.")
 
-# Collect delivery data (address)
 def delivery_info():
     """
     Collects and validates the customer's address for delivery orders.
@@ -144,14 +138,12 @@ def delivery_info():
         else:
             customer_details["house"] = house.title()
             break
-    # Street name validation
+    # Street and suburb validation
     street = validate_alpha("Please enter your street name: ")
     customer_details["street"] = street.title()
-    # Suburb name validation
     suburb = validate_alpha("Please enter your suburb name: ")
     customer_details["suburb"] = suburb.title()
 
-# Display Jollibee menu using pandas
 def jollibee_menu():
     """
     Displays the Jollibee menu in a formatted table using pandas.
@@ -170,7 +162,6 @@ def jollibee_menu():
     print(df)
     print()
 
-# Customer order process
 def jollibee_order():
     """
     Handles the process of taking the customer's order.
@@ -208,7 +199,6 @@ def jollibee_order():
             print(Fore.BLUE + "{} ${:.2f}".format(menu_items[item_ordered], menu_prices[item_ordered]) + Style.RESET_ALL)
             num_items = num_items - 1
 
-# Calculate total cost and apply delivery charge if needed
 def calculate_total(order_cost, del_pick):
     """
     Calculates the total cost of the order.
@@ -224,7 +214,6 @@ def calculate_total(order_cost, del_pick):
             total += delivery_charge
     return total, delivery_charge
 
-# Display customer order and summary
 def print_order(del_pick):
     """
     Prints the customer's details and order summary.
@@ -253,7 +242,6 @@ def print_order(del_pick):
     print(Style.BRIGHT + Fore.RED + "Total Cost: ${:.2f}".format(total_cost) + Style.RESET_ALL)
     print()
 
-# Confirm or cancel order
 def continue_cancel():
     """
     Asks the user to confirm or cancel their order.
@@ -270,7 +258,6 @@ def continue_cancel():
     elif del_pick == 2:
         print(Fore.RED + "Your order has been cancelled" + Style.RESET_ALL)
 
-# Exit program or start a new order
 def new_exit():
     """
     Asks the user if they want to start a new order or exit the program.
@@ -296,15 +283,15 @@ def main():
     Main function to run the Jollibee ordering bot.
     Calls all the main steps in order.
     """
-    welcome()  # Show welcome message and bot name
+    welcome()              # Show welcome message and bot name
     del_pick = pickup_delivery()  # Ask for pickup or delivery and collect details
-    jollibee_menu()  # Show menu
-    jollibee_order()  # Take the customer's order
+    jollibee_menu()        # Show menu
+    jollibee_order()       # Take the customer's order
     print_order(del_pick)  # Print order summary and total
-    continue_cancel()  # Ask to confirm or cancel order
-    new_exit()  # Ask to start new order or exit
+    continue_cancel()      # Ask to confirm or cancel order
+    new_exit()             # Ask to start new order or exit
 
-# Start the program by calling main()
+# --- Program Entry Point ---
 main()
 # Print customer details at the end for reference/debugging
 print(customer_details)
