@@ -1,71 +1,269 @@
-from random import randint  # Import randint to select a random bot name
+# Jollibee Bot
+# Bot that takes customers orders for Jollibee
+# Programmer: Kyle Tamani
+# Known Bugs: None
 
+import pandas as pd
+import re
+import random
+import sys
+from random import randint
+from colorama import Fore, Style, init
 
-# Constants for the range of valid inputs
+# List of bot names used by bot
+bot_names = [
+    "Elrick", "Mateo", "Edward", "River", "Kyle",
+    "Sean Combs", "Faustino", "Gallegos"
+]
+
+# Jollibee menu items and prices
+menu_items = [
+    "Chickenjoy", "Jolly Spaghetti", "Burger Steak", "Yumburger", "Jolly Hotdog", "Palabok Fiesta", "Jolly Crispy Fries", "Jolly Burger Steak",
+    "Jolly Kiddie Meal", "Jolly Sundae", "Jolly Twirl", "Jolly Float", "Jolly Hot Choco", "Jolly Coffee", "Jolly Breakfast Joys", "Jolly Tuna Pie",
+    "Jolly Shanghai Rolls", "Jolly Macaroni Soup", "Jolly Cheesy Classic", "Jolly Cheesy Bacon Mushroom", "Jolly Cheesy Deluxe", "Jolly Cheesy Bacon",
+    "Jolly Cheesy Classic Hotdog", "Jolly Cheesy Bacon Hotdog", "Jolly Cheesy Spaghetti"
+]
+menu_prices = [
+    5.99, 3.99, 4.99, 2.99, 3.49, 4.49, 1.99, 4.99, 3.49, 1.49, 1.29, 2.49, 1.99, 1.49, 3.99, 2.49, 2.99, 2.49, 3.49, 3.99, 3.79, 3.49, 3.99, 4.29, 3.99
+]
+
+# Lists to store ordered items and their prices
+order_list = []
+order_cost = []
+
+# Customer details dictionary
+customer_details = {}
+
+# Constant variables for low and high numbers for menus
 LOW = 1
 HIGH = 2
 
+# Set autoreset to true so that coloured text automatically stops at end of print statement
+init(autoreset=True)
 
-# ANSI escape codes for bold text formatting
-bold = "\033[1m"
-reset = "\033[0m"
-
-# List of bot names to randomly choose from
-bot_names = ["Elrick", "Mateo", "Edward", "River", "Kyle",  
-             "Sean Combs", "Faustino", "Gallegos"]
-
-# Function to display a welcome message with a random bot name
-def welcome():
-    num = randint(0, 7)  # Generate a random index
-    name = bot_names[num]  # Select a bot name
-    print(f"{bold}***Welcome to Jollibee***{reset}")
-    print(f"{bold}***My name is {name}***{reset}")
-    print(f"{bold}***I will be here to help you order your delicious Jollibee meal***{reset}")
-
-
-# Function to validate integer input within a specified range
+# Function to validate integer input within a range
 def integer_validation(low, high, question):
-    while True:  # Loop until valid input is provided
+    """
+    Validates that the user enters an integer within the specified range.
+    Keeps prompting until valid input is received.
+    """
+    while True:
         try:
-            # Prompt the user for input and convert it to an integer
             num = int(input(question))
-            # Check if the input is within the valid range
-            if num >= low and num <= high:
-                return num  # Return the valid input
+            if low <= num <= high:
+                return num
             else:
-                # Inform the user if the input is out of range
-                (f"Please enter {LOW} or {HIGH}")   
+                print(f"Please enter {LOW} or {HIGH}")
         except ValueError:
-            # Handle non-integer inputs
             print("Invalid input, please enter the options between 1 or 2")
-            (f"Please enter {LOW} or {HIGH}")
+            print(f"Please enter {LOW} or {HIGH}")
 
-# Function to handle the pickup or delivery selection
+# Function to validate alphabetic input (no numbers or special characters)
+def validate_alpha(question):
+    """
+    Prompts the user for input and ensures it only contains alphabetic characters.
+    """
+    while True:
+        response = input(question)
+        no_blanks = re.sub(r"\s+", "", response)
+        if not no_blanks.isalpha():
+            print("Input must only contain letters")
+        else:
+            return response
+
+# Welcome message with random bot name
+def welcome():
+    """
+    Prints a welcome message and introduces the bot with a random name.
+    """
+    name = random.choice(bot_names)
+    print("***Welcome to Jollibee***")
+    print(f"***My name is {name}***")
+    print("***I will be here to help you order your delicious Jollibee meal***")
+
+# Function for pickup or delivery selection
 def pickup_delivery():
-    # Display the main question to the user
+    """
+    Asks the user if they want click and collect or delivery.
+    Collects the appropriate customer details.
+    Returns 1 for click and collect, 2 for delivery.
+    """
     print("Would you like to Click and collect your order or do you want your order to be delivered?")
-    # Define the question prompt
-    question = f"Please enter {LOW} or {HIGH}: " 
-    # Provide the user with options
     print("Enter 1 for Click and collect")
     print("Enter 2 for Delivery")
-    # Call the integer validation function to get the user's choice
+    question = f"Please enter {LOW} or {HIGH}: "
     del_pick = integer_validation(LOW, HIGH, question)
-
     if del_pick == 1:
-        print("Click and collect") 
+        click_collect()
     elif del_pick == 2:
-        print("Delivery")  
+        click_collect()
+        delivery_info()
+    return del_pick
 
+# Collect Click and Collect data
+def click_collect():
+    """
+    Collects and validates the customer's name and phone number for click and collect or delivery.
+    """
+    pattern = r"^\d{8,12}$"
+    # Name validation
+    while True:
+        name = input("Please enter your name: ")
+        no_blanks = re.sub(r"\s+", "", name)
+        if not no_blanks.isalpha():
+            print("Input must only contain letters")
+        else:
+            customer_details["name"] = name.title()
+            break
+    # Phone number validation
+    while True:
+        phone = input("Please enter your phone number: ")
+        no_blanks = re.sub(r"\s+", "", phone)
+        if re.match(pattern, no_blanks):
+            customer_details["phone"] = no_blanks
+            break
+        else:
+            print("This is an invalid phone number.")
 
+# Collect delivery data
+def delivery_info():
+    """
+    Collects and validates the customer's address for delivery orders.
+    """
+    while True:
+        house = input("Please enter your house or apartment number: ")
+        if house == "":
+            print("Cannot be left blank")
+        else:
+            customer_details["house"] = house.title()
+            break
+    street = validate_alpha("Please enter your street name: ")
+    customer_details["street"] = street.title()
+    suburb = validate_alpha("Please enter your suburb name: ")
+    customer_details["suburb"] = suburb.title()
 
+# Display Jollibee menu using pandas
+def jollibee_menu():
+    """
+    Displays the Jollibee menu in a formatted table using pandas.
+    """
+    menu_dict = {}
+    pd.options.display.float_format = '${:,.2f}'.format
+    menu_dict['Number'] = list(range(1, 26))
+    menu_dict['Item'] = menu_items
+    menu_dict[""] = [""] * 25
+    menu_dict['Price'] = menu_prices
+    df = pd.DataFrame(menu_dict)
+    blankIndex = [''] * len(df)
+    df.index = blankIndex
+    print()
+    print("Jollibee Menu\n\n", df)
+    print()
 
+# Customer order process
+def jollibee_order():
+    """
+    Handles the process of taking the customer's order.
+    Allows the user to order between 1 and 5 menu items.
+    """
+    while True:
+        try:
+            num_items = int(input("How many menu items do you want to order? "))
+            if 1 <= num_items <= 5:
+                break
+            else:
+                print("Your order must be between 1 and 5")
+        except ValueError:
+            print("That is not a valid number")
+    print(num_items)
+    print("Please choose menu items by number from the menu")
+    for item in range(num_items):
+        while num_items > 0:
+            while True:
+                try:
+                    item_ordered = int(input())
+                    if 1 <= item_ordered <= 25:
+                        break
+                    else:
+                        print("Your menu choice must be between 1 and 25")
+                except ValueError:
+                    print("That is not a valid number")
+            item_ordered = item_ordered - 1
+            order_list.append(menu_items[item_ordered])
+            order_cost.append(menu_prices[item_ordered])
+            print("{} ${:.2f}".format(menu_items[item_ordered], menu_prices[item_ordered]))
+            num_items = num_items - 1
 
+# Display customer order
+def print_order(del_pick):
+    """
+    Prints the customer's details and order summary.
+    Shows different details depending on click and collect or delivery.
+    """
+    print()
+    print(Fore.GREEN + "Customer Details")
+    if del_pick == 1:
+        print("Click and Collect")
+        print(f"Customer Name: {customer_details['name']}\nCustomer Phone: {customer_details['phone']}")
+    else:
+        print("Delivery")
+        print(f"Customer Name: {customer_details['name']}\nCustomer Phone: {customer_details['phone']}\nCustomer Address: {customer_details['house']} {customer_details['street']} {customer_details['suburb']}")
+    print()
+    print(Fore.GREEN + "Order Details")
+    for count, item in enumerate(order_list):
+        print(Style.BRIGHT + "Ordered: {} Cost  ${:.2f}".format(item, order_cost[count]))
+    total_cost = sum(order_cost)
+    print(Style.BRIGHT + "Total Cost: ${:.2f}".format(total_cost))
+    print()
 
-# Calls both the welcome function and the pickup_delivery functions
+# Confirm or cancel order
+def continue_cancel():
+    """
+    Asks the user to confirm or cancel their order.
+    """
+    print("Do you want to continue with the order?")
+    print("Enter 1 to continue")
+    print("Enter 2 to cancel")
+    question = f"Please enter {LOW} or {HIGH}: "
+    del_pick = integer_validation(LOW, HIGH, question)
+    if del_pick == 1:
+        print("Thank you for your order")
+        print("Your order has been sent to the kitchen")
+        print("You will receive a text when it is ready to pickup or for delivery")
+    elif del_pick == 2:
+        print("Your order has been cancelled")
+
+# Exit program or start a new order
+def new_exit():
+    """
+    Asks the user if they want to start a new order or exit the program.
+    """
+    print("Do you want to continue with the order?")
+    print("Enter 1 for new order")
+    print("Enter 2 for exit")
+    question = f"Please enter {LOW} or {HIGH}: "
+    del_pick = integer_validation(LOW, HIGH, question)
+    if del_pick == 1:
+        print("New Order")
+        order_list.clear()
+        order_cost.clear()
+        main()
+    elif del_pick == 2:
+        print("Thank you for using Jollibee BOT")
+        exit()
 
 def main():
+    """
+    Main function to run the Jollibee ordering bot.
+    """
     welcome()
-    pickup_delivery()
-    
+    del_pick = pickup_delivery()
+    jollibee_menu()
+    jollibee_order()
+    print_order(del_pick)
+    continue_cancel()
+    new_exit()
+
+# Start the program
 main()
+print(customer_details)
