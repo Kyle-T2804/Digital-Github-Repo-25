@@ -9,7 +9,7 @@ import re
 import random
 import sys
 from random import randint
-from colorama import Fore, Style, init
+from colorama import Fore, Style, Back, init
 
 # List of bot names used by bot for a friendly greeting
 bot_names = [
@@ -81,9 +81,9 @@ def welcome():
     Prints a welcome message and introduces the bot with a random name.
     """
     name = random.choice(bot_names)
-    print("***Welcome to Jollibee***")
-    print(f"***My name is {name}***")
-    print("***I will be here to help you order your delicious Jollibee meal***")
+    print(Fore.YELLOW + Style.BRIGHT + "***Welcome to Jollibee***" + Style.RESET_ALL)
+    print(Fore.CYAN + Style.BRIGHT + f"***My name is {name}***" + Style.RESET_ALL)
+    print(Fore.MAGENTA + "***I will be here to help you order your delicious Jollibee meal***" + Style.RESET_ALL)
 
 # Function for pickup or delivery selection
 def pickup_delivery():
@@ -92,10 +92,10 @@ def pickup_delivery():
     Collects the appropriate customer details.
     Returns 1 for click and collect, 2 for delivery.
     """
-    print("Would you like to Click and collect your order or do you want your order to be delivered?")
-    print("Enter 1 for Click and collect")
-    print("Enter 2 for Delivery")
-    question = f"Please enter {LOW} or {HIGH}: "
+    print(Fore.GREEN + "Would you like to Click and collect your order or do you want your order to be delivered?" + Style.RESET_ALL)
+    print(Fore.BLUE + "Enter 1 for Click and collect" + Style.RESET_ALL)
+    print(Fore.BLUE + "Enter 2 for Delivery" + Style.RESET_ALL)
+    question = f"{Fore.YELLOW}Please enter {LOW} or {HIGH}:{Style.RESET_ALL} "
     del_pick = integer_validation(LOW, HIGH, question)
     if del_pick == 1:
         # Collect details for click and collect
@@ -160,13 +160,14 @@ def jollibee_menu():
     pd.options.display.float_format = '${:,.2f}'.format
     menu_dict['Number'] = list(range(1, 26))
     menu_dict['Item'] = menu_items
-    menu_dict[""] = [""] * 25  # For spacing in the DataFrame
+    menu_dict[""] = [""] * 25
     menu_dict['Price'] = menu_prices
     df = pd.DataFrame(menu_dict)
     blankIndex = [''] * len(df)
     df.index = blankIndex
     print()
-    print("Jollibee Menu\n\n", df)
+    print(Fore.RED + Style.BRIGHT + "Jollibee Menu" + Style.RESET_ALL)
+    print(df)
     print()
 
 # Customer order process
@@ -178,33 +179,33 @@ def jollibee_order():
     # Ask user how many items they want to order, must be between 1 and 5
     while True:
         try:
-            num_items = int(input("How many menu items do you want to order? "))
+            num_items = int(input(Fore.YELLOW + "How many menu items do you want to order? " + Style.RESET_ALL))
             if 1 <= num_items <= 5:
                 break
             else:
-                print("Your order must be between 1 and 5")
+                print(Fore.RED + "Your order must be between 1 and 5" + Style.RESET_ALL)
         except ValueError:
-            print("That is not a valid number")
-    print(num_items)
-    print("Please choose menu items by number from the menu")
+            print(Fore.RED + "That is not a valid number" + Style.RESET_ALL)
+    print(Fore.CYAN + f"{num_items}" + Style.RESET_ALL)
+    print(Fore.GREEN + "Please choose menu items by number from the menu" + Style.RESET_ALL)
     # Loop for each item the user wants to order
     for item in range(num_items):
         while num_items > 0:
             # Validate menu item selection
             while True:
                 try:
-                    item_ordered = int(input())
+                    item_ordered = int(input(Fore.YELLOW + "Menu item number: " + Style.RESET_ALL))
                     if 1 <= item_ordered <= 25:
                         break
                     else:
-                        print("Your menu choice must be between 1 and 25")
+                        print(Fore.RED + "Your menu choice must be between 1 and 25" + Style.RESET_ALL)
                 except ValueError:
-                    print("That is not a valid number")
+                    print(Fore.RED + "That is not a valid number" + Style.RESET_ALL)
             item_ordered = item_ordered - 1  # Adjust for zero-based index
             # Add selected item and its price to order lists
             order_list.append(menu_items[item_ordered])
             order_cost.append(menu_prices[item_ordered])
-            print("{} ${:.2f}".format(menu_items[item_ordered], menu_prices[item_ordered]))
+            print(Fore.BLUE + "{} ${:.2f}".format(menu_items[item_ordered], menu_prices[item_ordered]) + Style.RESET_ALL)
             num_items = num_items - 1
 
 # Calculate total cost and apply delivery charge if needed
@@ -231,25 +232,25 @@ def print_order(del_pick):
     Adds delivery charge if applicable.
     """
     print()
-    print(Fore.GREEN + "Customer Details")
+    print(Fore.GREEN + Style.BRIGHT + "Customer Details" + Style.RESET_ALL)
     if del_pick == 1:
         # Print details for click and collect
-        print("Click and Collect")
+        print(Fore.CYAN + "Click and Collect" + Style.RESET_ALL)
         print(f"Customer Name: {customer_details['name']}\nCustomer Phone: {customer_details['phone']}")
     else:
         # Print details for delivery
-        print("Delivery")
+        print(Fore.CYAN + "Delivery" + Style.RESET_ALL)
         print(f"Customer Name: {customer_details['name']}\nCustomer Phone: {customer_details['phone']}\nCustomer Address: {customer_details['house']} {customer_details['street']} {customer_details['suburb']}")
     print()
-    print(Fore.GREEN + "Order Details")
+    print(Fore.GREEN + Style.BRIGHT + "Order Details" + Style.RESET_ALL)
     # Print each ordered item and its cost
     for count, item in enumerate(order_list):
-        print(Style.BRIGHT + "Ordered: {} Cost  ${:.2f}".format(item, order_cost[count]))
+        print(Style.BRIGHT + Fore.YELLOW + "Ordered: {} Cost  ${:.2f}".format(item, order_cost[count]) + Style.RESET_ALL)
     total_cost, delivery_charge = calculate_total(order_cost, del_pick)
     # Show delivery charge if applicable
     if del_pick == 2 and delivery_charge > 0:
-        print(Style.BRIGHT + f"Delivery Charge: ${delivery_charge:.2f} (Orders over $50 get free delivery)")
-    print(Style.BRIGHT + "Total Cost: ${:.2f}".format(total_cost))
+        print(Style.BRIGHT + Fore.MAGENTA + f"Delivery Charge: ${delivery_charge:.2f} (Orders over $50 get free delivery)" + Style.RESET_ALL)
+    print(Style.BRIGHT + Fore.RED + "Total Cost: ${:.2f}".format(total_cost) + Style.RESET_ALL)
     print()
 
 # Confirm or cancel order
@@ -257,17 +258,17 @@ def continue_cancel():
     """
     Asks the user to confirm or cancel their order.
     """
-    print("Do you want to continue with the order?")
-    print("Enter 1 to continue")
-    print("Enter 2 to cancel")
-    question = f"Please enter {LOW} or {HIGH}: "
+    print(Fore.YELLOW + "Do you want to continue with the order?" + Style.RESET_ALL)
+    print(Fore.BLUE + "Enter 1 to continue" + Style.RESET_ALL)
+    print(Fore.BLUE + "Enter 2 to cancel" + Style.RESET_ALL)
+    question = f"{Fore.YELLOW}Please enter {LOW} or {HIGH}:{Style.RESET_ALL} "
     del_pick = integer_validation(LOW, HIGH, question)
     if del_pick == 1:
-        print("Thank you for your order")
-        print("Your order has been sent to the kitchen")
-        print("You will receive a text when it is ready to pickup or for delivery")
+        print(Fore.GREEN + "Thank you for your order" + Style.RESET_ALL)
+        print(Fore.GREEN + "Your order has been sent to the kitchen" + Style.RESET_ALL)
+        print(Fore.GREEN + "You will receive a text when it is ready to pickup or for delivery" + Style.RESET_ALL)
     elif del_pick == 2:
-        print("Your order has been cancelled")
+        print(Fore.RED + "Your order has been cancelled" + Style.RESET_ALL)
 
 # Exit program or start a new order
 def new_exit():
@@ -275,19 +276,19 @@ def new_exit():
     Asks the user if they want to start a new order or exit the program.
     Clears the order lists if starting a new order.
     """
-    print("Do you want to continue with the order?")
-    print("Enter 1 for new order")
-    print("Enter 2 for exit")
-    question = f"Please enter {LOW} or {HIGH}: "
+    print(Fore.YELLOW + "Do you want to continue with the order?" + Style.RESET_ALL)
+    print(Fore.BLUE + "Enter 1 for new order" + Style.RESET_ALL)
+    print(Fore.BLUE + "Enter 2 for exit" + Style.RESET_ALL)
+    question = f"{Fore.YELLOW}Please enter {LOW} or {HIGH}:{Style.RESET_ALL} "
     del_pick = integer_validation(LOW, HIGH, question)
     if del_pick == 1:
-        print("New Order")
+        print(Fore.GREEN + "New Order" + Style.RESET_ALL)
         # Clear previous order data for a fresh start
         order_list.clear()
         order_cost.clear()
         main()  # Restart the ordering process
     elif del_pick == 2:
-        print("Thank you for using Jollibee BOT")
+        print(Fore.MAGENTA + "Thank you for using Jollibee BOT" + Style.RESET_ALL)
         exit()
 
 def main():
