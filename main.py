@@ -3,7 +3,7 @@
 # Programmer: Kyle Tamani
 # Known Bugs: None
 
-# Import required libraries
+# Import required libraries for data handling, validation, and colored output
 import pandas as pd
 import re
 import random
@@ -175,6 +175,7 @@ def jollibee_order():
     Handles the process of taking the customer's order.
     Allows the user to order between 1 and 5 menu items.
     """
+    # Ask user how many items they want to order, must be between 1 and 5
     while True:
         try:
             num_items = int(input("How many menu items do you want to order? "))
@@ -189,6 +190,7 @@ def jollibee_order():
     # Loop for each item the user wants to order
     for item in range(num_items):
         while num_items > 0:
+            # Validate menu item selection
             while True:
                 try:
                     item_ordered = int(input())
@@ -199,6 +201,7 @@ def jollibee_order():
                 except ValueError:
                     print("That is not a valid number")
             item_ordered = item_ordered - 1  # Adjust for zero-based index
+            # Add selected item and its price to order lists
             order_list.append(menu_items[item_ordered])
             order_cost.append(menu_prices[item_ordered])
             print("{} ${:.2f}".format(menu_items[item_ordered], menu_prices[item_ordered]))
