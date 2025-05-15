@@ -3,6 +3,7 @@
 # Programmer: Kyle Tamani
 # Known Bugs: None
 
+# Import required libraries
 import pandas as pd
 import re
 import random
@@ -10,13 +11,13 @@ import sys
 from random import randint
 from colorama import Fore, Style, init
 
-# List of bot names used by bot
+# List of bot names used by bot for a friendly greeting
 bot_names = [
     "Elrick", "Mateo", "Edward", "River", "Kyle",
     "Sean Combs", "Faustino", "Gallegos"
 ]
 
-# Jollibee menu items and prices
+# Jollibee menu items and their corresponding prices
 menu_items = [
     "Chickenjoy", "Jolly Spaghetti", "Burger Steak", "Yumburger", "Jolly Hotdog", "Palabok Fiesta", "Jolly Crispy Fries", "Jolly Burger Steak",
     "Jolly Kiddie Meal", "Jolly Sundae", "Jolly Twirl", "Jolly Float", "Jolly Hot Choco", "Jolly Coffee", "Jolly Breakfast Joys", "Jolly Tuna Pie",
@@ -27,14 +28,14 @@ menu_prices = [
     5.99, 3.99, 4.99, 2.99, 3.49, 4.49, 1.99, 4.99, 3.49, 1.49, 1.29, 2.49, 1.99, 1.49, 3.99, 2.49, 2.99, 2.49, 3.49, 3.99, 3.79, 3.49, 3.99, 4.29, 3.99
 ]
 
-# Lists to store ordered items and their prices
+# Lists to store ordered items and their prices for the current order
 order_list = []
 order_cost = []
 
-# Customer details dictionary
+# Dictionary to store customer details for the current order
 customer_details = {}
 
-# Constant variables for low and high numbers for menus
+# Constant variables for low and high numbers for menu options
 LOW = 1
 HIGH = 2
 
@@ -62,10 +63,13 @@ def integer_validation(low, high, question):
 def validate_alpha(question):
     """
     Prompts the user for input and ensures it only contains alphabetic characters.
+    Used for validating street and suburb names.
     """
     while True:
         response = input(question)
+        # Remove all whitespace from the input
         no_blanks = re.sub(r"\s+", "", response)
+        # Check if input is alphabetic
         if not no_blanks.isalpha():
             print("Input must only contain letters")
         else:
@@ -94,19 +98,21 @@ def pickup_delivery():
     question = f"Please enter {LOW} or {HIGH}: "
     del_pick = integer_validation(LOW, HIGH, question)
     if del_pick == 1:
+        # Collect details for click and collect
         click_collect()
     elif del_pick == 2:
+        # Collect details for delivery (includes address)
         click_collect()
         delivery_info()
     return del_pick
 
-# Collect Click and Collect data
+# Collect Click and Collect data (name and phone)
 def click_collect():
     """
     Collects and validates the customer's name and phone number for click and collect or delivery.
     """
     pattern = r"^\d{8,12}$"
-    # Name validation
+    # Name validation loop
     while True:
         name = input("Please enter your name: ")
         no_blanks = re.sub(r"\s+", "", name)
@@ -115,7 +121,7 @@ def click_collect():
         else:
             customer_details["name"] = name.title()
             break
-    # Phone number validation
+    # Phone number validation loop
     while True:
         phone = input("Please enter your phone number: ")
         no_blanks = re.sub(r"\s+", "", phone)
@@ -125,11 +131,12 @@ def click_collect():
         else:
             print("This is an invalid phone number.")
 
-# Collect delivery data
+# Collect delivery data (address)
 def delivery_info():
     """
     Collects and validates the customer's address for delivery orders.
     """
+    # House/apartment number validation (cannot be blank)
     while True:
         house = input("Please enter your house or apartment number: ")
         if house == "":
@@ -137,8 +144,10 @@ def delivery_info():
         else:
             customer_details["house"] = house.title()
             break
+    # Street name validation
     street = validate_alpha("Please enter your street name: ")
     customer_details["street"] = street.title()
+    # Suburb name validation
     suburb = validate_alpha("Please enter your suburb name: ")
     customer_details["suburb"] = suburb.title()
 
@@ -151,7 +160,7 @@ def jollibee_menu():
     pd.options.display.float_format = '${:,.2f}'.format
     menu_dict['Number'] = list(range(1, 26))
     menu_dict['Item'] = menu_items
-    menu_dict[""] = [""] * 25
+    menu_dict[""] = [""] * 25  # For spacing in the DataFrame
     menu_dict['Price'] = menu_prices
     df = pd.DataFrame(menu_dict)
     blankIndex = [''] * len(df)
@@ -177,6 +186,7 @@ def jollibee_order():
             print("That is not a valid number")
     print(num_items)
     print("Please choose menu items by number from the menu")
+    # Loop for each item the user wants to order
     for item in range(num_items):
         while num_items > 0:
             while True:
@@ -188,7 +198,7 @@ def jollibee_order():
                         print("Your menu choice must be between 1 and 25")
                 except ValueError:
                     print("That is not a valid number")
-            item_ordered = item_ordered - 1
+            item_ordered = item_ordered - 1  # Adjust for zero-based index
             order_list.append(menu_items[item_ordered])
             order_cost.append(menu_prices[item_ordered])
             print("{} ${:.2f}".format(menu_items[item_ordered], menu_prices[item_ordered]))
@@ -203,13 +213,14 @@ def calculate_total(order_cost, del_pick):
     """
     total = sum(order_cost)
     delivery_charge = 0
+    # Only add delivery charge if order is for delivery and total is $50 or less
     if del_pick == 2:  # 2 means delivery
         if total <= 50:
             delivery_charge = 14.00
             total += delivery_charge
     return total, delivery_charge
 
-# Display customer order
+# Display customer order and summary
 def print_order(del_pick):
     """
     Prints the customer's details and order summary.
@@ -219,16 +230,20 @@ def print_order(del_pick):
     print()
     print(Fore.GREEN + "Customer Details")
     if del_pick == 1:
+        # Print details for click and collect
         print("Click and Collect")
         print(f"Customer Name: {customer_details['name']}\nCustomer Phone: {customer_details['phone']}")
     else:
+        # Print details for delivery
         print("Delivery")
         print(f"Customer Name: {customer_details['name']}\nCustomer Phone: {customer_details['phone']}\nCustomer Address: {customer_details['house']} {customer_details['street']} {customer_details['suburb']}")
     print()
     print(Fore.GREEN + "Order Details")
+    # Print each ordered item and its cost
     for count, item in enumerate(order_list):
         print(Style.BRIGHT + "Ordered: {} Cost  ${:.2f}".format(item, order_cost[count]))
     total_cost, delivery_charge = calculate_total(order_cost, del_pick)
+    # Show delivery charge if applicable
     if del_pick == 2 and delivery_charge > 0:
         print(Style.BRIGHT + f"Delivery Charge: ${delivery_charge:.2f} (Orders over $50 get free delivery)")
     print(Style.BRIGHT + "Total Cost: ${:.2f}".format(total_cost))
@@ -255,6 +270,7 @@ def continue_cancel():
 def new_exit():
     """
     Asks the user if they want to start a new order or exit the program.
+    Clears the order lists if starting a new order.
     """
     print("Do you want to continue with the order?")
     print("Enter 1 for new order")
@@ -263,9 +279,10 @@ def new_exit():
     del_pick = integer_validation(LOW, HIGH, question)
     if del_pick == 1:
         print("New Order")
+        # Clear previous order data for a fresh start
         order_list.clear()
         order_cost.clear()
-        main()
+        main()  # Restart the ordering process
     elif del_pick == 2:
         print("Thank you for using Jollibee BOT")
         exit()
@@ -273,15 +290,17 @@ def new_exit():
 def main():
     """
     Main function to run the Jollibee ordering bot.
+    Calls all the main steps in order.
     """
-    welcome()
-    del_pick = pickup_delivery()
-    jollibee_menu()
-    jollibee_order()
-    print_order(del_pick)
-    continue_cancel()
-    new_exit()
+    welcome()  # Show welcome message and bot name
+    del_pick = pickup_delivery()  # Ask for pickup or delivery and collect details
+    jollibee_menu()  # Show menu
+    jollibee_order()  # Take the customer's order
+    print_order(del_pick)  # Print order summary and total
+    continue_cancel()  # Ask to confirm or cancel order
+    new_exit()  # Ask to start new order or exit
 
-# Start the program
+# Start the program by calling main()
 main()
+# Print customer details at the end for reference/debugging
 print(customer_details)
