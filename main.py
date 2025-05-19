@@ -130,13 +130,15 @@ def delivery_info():
     """
     Collects and validates the customer's address for delivery orders.
     """
-    # House/apartment number validation (cannot be blank)
+    # House/apartment number validation (must be an integer and cannot be blank)
     while True:
         house = input("Please enter your house or apartment number: ")
         if house == "":
             print("Cannot be left blank")
+        elif not house.isdigit():
+            print("House or apartment number must be a number")
         else:
-            customer_details["house"] = house.title()
+            customer_details["house"] = house
             break
     # Street and suburb validation
     street = validate_alpha("Please enter your street name: ")
@@ -237,8 +239,11 @@ def print_order(del_pick):
         print(Style.BRIGHT + Fore.YELLOW + "Ordered: {} Cost  ${:.2f}".format(item, order_cost[count]) + Style.RESET_ALL)
     total_cost, delivery_charge = calculate_total(order_cost, del_pick)
     # Show delivery charge if applicable
-    if del_pick == 2 and delivery_charge > 0:
-        print(Style.BRIGHT + Fore.MAGENTA + f"Delivery Charge: ${delivery_charge:.2f} (Orders over $50 get free delivery)" + Style.RESET_ALL)
+    if del_pick == 2:
+        if delivery_charge > 0:
+            print(Style.BRIGHT + Fore.MAGENTA + f"Delivery Charge: ${delivery_charge:.2f} (Orders over $50 get free delivery)" + Style.RESET_ALL)
+        else:
+            print(Style.BRIGHT + Fore.MAGENTA + "You get FREE delivery since your order is over $50!" + Style.RESET_ALL)
     print(Style.BRIGHT + Fore.RED + "Total Cost: ${:.2f}".format(total_cost) + Style.RESET_ALL)
     print()
 
