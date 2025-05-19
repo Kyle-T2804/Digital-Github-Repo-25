@@ -27,7 +27,7 @@ menu_items = [
     "Jolly Cheesy Classic Hotdog", "Jolly Cheesy Bacon Hotdog", "Jolly Cheesy Spaghetti"
 ]
 menu_prices = [
-    5.99, 3.99, 4.99, 2.99, 3.49, 4.49, 1.99, 4.99, 3.49, 1.49, 1.29, 2.49, 1.99, 1.49, 3.99, 2.49, 2.99, 2.49, 3.49, 3.99, 3.79, 3.49, 3.99, 4.29, 3.99
+    17.99, 11.99, 15.99, 7.99, 9.49, 12.49, 4.99, 12.99, 9.49, 3.49, 3.29, 6.49, 3.99, 3.49, 9.99, 6.49, 6.99, 6.49, 9.49, 9.99, 9.79, 9.49, 9.99, 12.29, 9.99
 ]
 
 # --- Order State ---
@@ -165,16 +165,16 @@ def jollibee_menu():
 def jollibee_order():
     """
     Handles the process of taking the customer's order.
-    Allows the user to order between 1 and 5 menu items.
+    Allows the user to order between 1 and 10 menu items.
     """
-    # Ask user how many items they want to order, must be between 1 and 5
+    # Ask user how many items they want to order, must be between 1 and 10
     while True:
         try:
             num_items = int(input(Fore.YELLOW + "How many menu items do you want to order? " + Style.RESET_ALL))
-            if 1 <= num_items <= 5:
+            if 1 <= num_items <= 10:
                 break
             else:
-                print(Fore.RED + "Your order must be between 1 and 5" + Style.RESET_ALL)
+                print(Fore.RED + "Your order must be between 1 and 10" + Style.RESET_ALL)
         except ValueError:
             print(Fore.RED + "That is not a valid number" + Style.RESET_ALL)
     print(Fore.CYAN + f"{num_items}" + Style.RESET_ALL)
