@@ -11,10 +11,10 @@ def integer_validation(low, high, question):
             if low <= num <= high:
                 return num
             else:
-                print(f"Please enter {LOW} or {HIGH}")
+                (f"Please enter {LOW} or {HIGH}")
         except ValueError:
             print("Invalid input, please enter the options between 1 or 2")
-            print(f"Please enter {LOW} or {HIGH}")
+            (f"Please enter {LOW} or {HIGH}")
 
 def new_exit():
     print("Do you want to continue with the order?")
