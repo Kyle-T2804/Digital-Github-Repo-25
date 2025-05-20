@@ -14,7 +14,7 @@ def integer_validation(low, high, question):
                 (f"Please enter {LOW} or {HIGH}")
         except ValueError:
             print("Invalid input, please enter the options between 1 or 2")
-            print(f"Please enter {LOW} or {HIGH}")
+            (f"Please enter {LOW} or {HIGH}")
 
 def continue_cancel():
     print("Do you want to continue with the order?")
